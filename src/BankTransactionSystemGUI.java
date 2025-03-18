@@ -8,27 +8,34 @@ public class BankTransactionSystemGUI {
     public static void main(String[] args) {
         // Create a frame for the GUI
         JFrame frame = new JFrame("Bank Transaction System");
-        frame.setSize(300, 300);
+        frame.setSize(300, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create UI elements
+        // This panel used not to have any borders, making the buttons stretch a lot
         JPanel panel = new JPanel();
         JTextField depositField = new JTextField(10);
         JTextField withdrawField = new JTextField(10);
-        JLabel balanceLabel = new JLabel("Balance: " + account.getBalance());
+        JLabel balanceLabel = new JLabel("Balance: " + account.getBalance(), SwingConstants.CENTER);
 
         JButton depositButton = new JButton("Deposit");
         JButton withdrawButton = new JButton("Withdraw");
 
         // Layout settings
-        panel.setLayout(new GridLayout(4, 2));
+        panel.add(balanceLabel);
+        
+        panel.setLayout(new GridLayout(9, 4));
+       
+        
         panel.add(new JLabel("Deposit Amount:"));
         panel.add(depositField);
         panel.add(depositButton);
+        panel.add(new JLabel(""));
         panel.add(new JLabel("Withdraw Amount:"));
         panel.add(withdrawField);
         panel.add(withdrawButton);
-        panel.add(balanceLabel);
+        panel.add(new JLabel(""));
+        
 
         frame.add(panel);
         frame.setVisible(true);

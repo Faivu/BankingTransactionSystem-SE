@@ -18,14 +18,15 @@ public class BankAccount {
     }
 
     // Thread-safe deposit method with validation
-    public void deposit(double amount) {
+    // Throwing exception replaced with returning 
+    public String  deposit(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Deposit amount must be positive.");
+            return ("Deposit amount must be positive.");
         }
         lock.lock();
         try {
             balance += amount;
-            System.out.println("Deposited: " + amount + " | Current Balance: " + balance);
+            return ("Deposited: " + amount + " | Current Balance: " + balance);
         } finally {
             lock.unlock();
         }

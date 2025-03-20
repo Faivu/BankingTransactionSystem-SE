@@ -21,6 +21,12 @@ public class BankTransactionSystemGUI {
         JButton depositButton = new JButton("Deposit");
         JButton withdrawButton = new JButton("Withdraw");
 
+        // Creating Error labels
+        JLabel depositErrorLabel = new JLabel("");
+        JLabel withdrawErrorLabel = new JLabel("");
+        //depositErrorLabel.setForeground(Color.RED);
+        withdrawErrorLabel.setForeground(Color.RED);
+        
         // Layout settings
         panel.add(balanceLabel);
         
@@ -30,11 +36,13 @@ public class BankTransactionSystemGUI {
         panel.add(new JLabel("Deposit Amount:"));
         panel.add(depositField);
         panel.add(depositButton);
-        panel.add(new JLabel(""));
+        panel.add(depositErrorLabel); 
+        //panel.add(new JLabel(""));
         panel.add(new JLabel("Withdraw Amount:"));
         panel.add(withdrawField);
         panel.add(withdrawButton);
-        panel.add(new JLabel(""));
+        panel.add(withdrawErrorLabel);
+        //panel.add(new JLabel(""));
         
 
         frame.add(panel);
@@ -44,9 +52,20 @@ public class BankTransactionSystemGUI {
         depositButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double amount = Double.parseDouble(depositField.getText());
-                new Thread(() -> account.deposit(amount)).start();
-                balanceLabel.setText("Balance: " + account.getBalance());
+            	double amount = Double.parseDouble(depositField.getText());
+                new Thread(() -> {
+                    String message = account.deposit(amount);
+                    SwingUtilities.invokeLater(() -> {
+                        if (message.startsWith("Deposited")) {
+                            balanceLabel.setText("Balance: " + account.getBalance());
+                            // For clearing the error message
+                            depositErrorLabel.setText(message);
+                        } else {
+                        	depositErrorLabel.setForeground(Color.RED);
+                        	depositErrorLabel.setText(message);
+                        }
+                    });
+                }).start();
             }
         });
 

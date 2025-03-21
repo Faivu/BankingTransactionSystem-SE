@@ -18,19 +18,33 @@ public class BankAccount {
     }
 
     // Thread-safe deposit method with validation
-    // Throwing exception replaced with returning 
-    public String  deposit(double amount) {
-        if (amount <= 0) {
-            return ("Deposit amount must be positive.");
-        }
-        lock.lock();
+    public String deposit(double amount) {
+        boolean isLocked = false; // Track if the lock was acquired
+        
         try {
+            if (amount <= 0) {
+                return "Deposit amount must be positive.";
+            }
+
+            lock.lock();
+            isLocked = true; // Lock acquired successfully
+            
             balance += amount;
-            return ("Deposited: " + amount + " | Current Balance: " + balance);
+            return "Deposited: " + amount + " | Current Balance: " + balance;
+
+        } 
+        catch (NumberFormatException e) {
+        	return ("Deposit must be a number.");
+        }
+        catch (IllegalArgumentException e) {
+            return "Deposit amount must be positive.";
         } finally {
-            lock.unlock();
+            if (isLocked) { // Only unlock if lock was actually acquired
+                lock.unlock();
+            }
         }
     }
+    
 
     // Thread-safe withdrawal method with validation
     public String withdraw(double amount) {

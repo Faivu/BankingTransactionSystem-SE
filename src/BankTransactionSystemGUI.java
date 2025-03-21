@@ -12,7 +12,6 @@ public class BankTransactionSystemGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create UI elements
-        // This panel used not to have any borders, making the buttons stretch a lot
         JPanel panel = new JPanel();
         JTextField depositField = new JTextField(10);
         JTextField withdrawField = new JTextField(10);
@@ -24,25 +23,22 @@ public class BankTransactionSystemGUI {
         // Creating Error labels
         JLabel depositErrorLabel = new JLabel("");
         JLabel withdrawErrorLabel = new JLabel("");
-        //depositErrorLabel.setForeground(Color.RED);
-        withdrawErrorLabel.setForeground(Color.RED);
+        
+        
         
         // Layout settings
         panel.add(balanceLabel);
-        
         panel.setLayout(new GridLayout(9, 4));
        
-        
+        // Initialising the UI elements
         panel.add(new JLabel("Deposit Amount:"));
         panel.add(depositField);
         panel.add(depositButton);
         panel.add(depositErrorLabel); 
-        //panel.add(new JLabel(""));
         panel.add(new JLabel("Withdraw Amount:"));
         panel.add(withdrawField);
         panel.add(withdrawButton);
         panel.add(withdrawErrorLabel);
-        //panel.add(new JLabel(""));
         
 
         frame.add(panel);
@@ -58,7 +54,9 @@ public class BankTransactionSystemGUI {
                     SwingUtilities.invokeLater(() -> {
                         if (message.startsWith("Deposited")) {
                             balanceLabel.setText("Balance: " + account.getBalance());
-                            // For clearing the error message
+
+                         // Changing the colours of the message depending on if it is an error or a confirmation message
+                            depositErrorLabel.setForeground(Color.BLACK);
                             depositErrorLabel.setText(message);
                         } else {
                         	depositErrorLabel.setForeground(Color.RED);
@@ -73,10 +71,25 @@ public class BankTransactionSystemGUI {
         withdrawButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double amount = Double.parseDouble(withdrawField.getText());
-                new Thread(() -> account.withdraw(amount)).start();
-                balanceLabel.setText("Balance: " + account.getBalance());
+            	double amount = Double.parseDouble(withdrawField.getText());
+                new Thread(() -> {
+                    String message = account.withdraw(amount);
+                    SwingUtilities.invokeLater(() -> {
+                        if (message.startsWith("Withdrawn")) {
+                            balanceLabel.setText("Balance: " + account.getBalance());
+                            
+                            // Changing the colours of the message depending on if it is an error or a confirmation message
+                            withdrawErrorLabel.setForeground(Color.BLACK);
+                            withdrawErrorLabel.setText(message);
+                        } else {
+                            withdrawErrorLabel.setForeground(Color.RED);
+                            withdrawErrorLabel.setText(message);
+                        }
+                    });
+                }).start();
             }
         });
+        
+        }
     }
-}
+

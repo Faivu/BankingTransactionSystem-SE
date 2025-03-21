@@ -33,19 +33,19 @@ public class BankAccount {
     }
 
     // Thread-safe withdrawal method with validation
-    public boolean withdraw(double amount) {
+    public String withdraw(double amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be positive.");
+            return ("Withdrawal amount must be positive.");
         }
         lock.lock();
         try {
             if (balance >= amount) {
                 balance -= amount;
-                System.out.println("Withdrawn: " + amount + " | Current Balance: " + balance);
-                return true;
+                return ("Withdrawn: " + amount + " | Current Balance: " + balance);
+                
             } else {
-                System.out.println("Insufficient funds.");
-                return false;
+                return ("Insufficient funds.");
+                
             }
         } finally {
             lock.unlock();
